@@ -8,7 +8,7 @@ def plot_model_results(df,metrics):
         'f1_score': 'blue',
         'accuracy_score':'grey',
         'precision': 'green',
-        'recall': 'purple'
+        'recall': 'purple',
     }
     fig  = px.bar(df,
                 x='model_name',

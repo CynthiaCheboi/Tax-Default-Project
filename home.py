@@ -8,7 +8,7 @@ from utils.plot import plot_model_results
 
 
 model_path = 'models_metadata.pkl'
-#note_book_path = 
+#note_book_path = 'Notebook.html'
 import streamlit.components.v1 as components
 
 
@@ -39,9 +39,6 @@ with st.sidebar:
 ###########################################################################################
 def main():
     if selected == "Home":
-       
-        # Logo section
-        st.image('kra-logo.png', width=200)
 
         st.title("Tax Default Prediction Tool")
 
@@ -52,14 +49,14 @@ def main():
         In today's dynamic tax landscape, ensuring tax compliance is crucial for sustaining government revenue collection. 
         However, a persistent challenge lies in the inability to predict and prevent instances of late or non-payment of taxes, 
         leading to an annual loss of Ksh. 20 billion. The current manual monitoring system lacks the capacity for early intervention, relying on reactive measures after taxpayers default. 
-        With an average staff member monitoring 1,000 taxpayers and limited resources for proactive engagement, 
-        the need for a predictive model to identify high-risk taxpayers in real-time is evident.
+        With a staff member on average monitoring 1,000 taxpayers and limited resources for proactive engagement, 
+        the need for a predictive model to identify default taxpayers in real-time is evident.
         """)
 
         st.markdown("### Objectives")
 
         st.markdown("""
-        The primary goal of this predictive project is to develop a machine learning model that can accurately predict risky taxpayers 
+        The primary goal of this predictive project is to develop a machine learning model that can accurately predict taxpayers that are likely to default
         in real-time using historical data. Specifically, the following objectives are explored:
         
         - **Identify Key Predictive Features:** Analyze taxpayer demographics and past declaration information to determine the most important features for predicting tax evasion.
@@ -133,66 +130,67 @@ if selected == "Prediction":
     with st.form('my_form',border=True):
         col1, col2, col3 = st.columns(3)
         with col1:
-            Effective_tax_rate       = st.number_input("Effective Tax Rate")
+            net_profit = st.number_input("Net Profit")
         with col2:
-            VAT_payable           = st.number_input("VAT payable")
+            current_assets        = st.number_input("Current Assets")
         with col3:
-            installment_tax_paid           = st.number_input("Installment Tax Paid")
+            total_inventory           = st.number_input("Total Inventory")
 
         col4, col5,col6 = st.columns(3)
         with col4:
-            WVAT_credit = st.number_input("WHVAT credit")
+            proprtor_capt_reserves = st.number_input("Share Capital and Reserves")
         with col5:
-            output_VAT = st.number_input("Output VAT")
+            total_debt = st.number_input("Total Debt")  
         with col6:
-            VAT_input_output = st.number_input("VAT Input Output")
+            capital_allowance = st.number_input(label="Capital Allowance")
 
         col7, col8,col9 = st.columns(3)
         with col7:
-            current_assets        = st.number_input("Current Assets")
+            installment_tax_paid           = st.number_input("Installment Tax Paid")
         with col8:
-            total_sales = st.number_input("Total Sales")
+            tax_payable_IT = st.number_input("IT Tax Payable")
         with col9:
-            less_crdt_bal_prv_mnth = st.number_input("Previous Month Credit Balance")
-
+            sales_exempt = st.number_input("Exempt Sales")
+            
         col10, col11,col12 = st.columns(3)
         with col10:
-            input_VAT = st.number_input("Input VAT")
+            output_VAT = st.number_input("Output VAT")
         with col11:
-            total_liabilities = st.number_input("Total Liabilities")
+            input_VAT = st.number_input("Input VAT")
+            
         with col12:
-            total_expenses = st.number_input("Total Expenses")
+            VAT_payable = st.number_input("VAT Payable")
 
         col13, col14,col15 = st.columns(3)
         with col13:
-            total_purchases = st.number_input("Total Purchases")
+            less_crdt_bal_prv_mnth = st.number_input("Previous Month Credit Balance")
         with col14:
-            current_liabilities = st.number_input("Current Liabilities")
+            WVAT_credit = st.number_input("WHVAT credit")
         with col15:
-            profit_margin = st.number_input("Profit Margin")
+            VAT_advance_paid = st.number_input(label="VAT Advance Paid")
 
         col16, col17,col18 = st.columns(3)
         with col16:
-            proprtor_capt_reserves = st.number_input("Share Capital and Reserves")
-        with col17:
             paye_payable           = st.number_input("[PAYE] payable")
+        with col17:
+            current_ratio = st.number_input(label="Current Ratio")
         with col18:
-            gross_turnover = st.number_input("Gross Turnover")
+            quick_ratio = st.number_input(label="Quick Ratio")
 
         col19, col20 = st.columns(2)
         with col19:
-            Age = st.number_input("Age")
+            Gearing_ratio = st.number_input(label="Gearing Ratio")
         with col20:
-            net_profit = st.number_input("Net Profit")
+            total_liabilities = st.number_input("Total Liabilities")
 
-        submited = st.form_submit_button(label='Predict')
+        submitted = st.form_submit_button(label='Predict')
 
-    if submited:
+    if submitted:
         # check if all paramaters have been checked
-        list_of_params  = [Effective_tax_rate, VAT_payable, installment_tax_paid, WVAT_credit, output_VAT,
-                           VAT_input_output, current_assets, total_sales, less_crdt_bal_prv_mnth, input_VAT,
-                           total_liabilities, total_expenses, total_purchases, current_liabilities, profit_margin,
-                            proprtor_capt_reserves, paye_payable, gross_turnover, Age, net_profit ]
+        list_of_params  = [net_profit, current_assets, total_inventory, proprtor_capt_reserves, total_debt,
+                           VAT_payable, capital_allowance, installment_tax_paid, tax_payable_IT, sales_exempt,
+                           output_VAT, input_VAT,VAT_payable, less_crdt_bal_prv_mnth, WVAT_credit, VAT_advance_paid,
+                           paye_payable, current_ratio, quick_ratio, Gearing_ratio, total_liabilities]
 
         if list_of_params is not None:
             list_of_params = [float(i) for i in list_of_params]
@@ -200,27 +198,26 @@ if selected == "Prediction":
             # create a dataframe
             data = pd.DataFrame(
                 {
-                    "Effective_tax_rate": [Effective_tax_rate],
-                    "VAT_payable": [VAT_payable],
-                    "installment_tax_paid": [installment_tax_paid],
-                    "WVAT - credit": [WVAT_credit],
-                    "output_VAT": [output_VAT],
-                    "VAT_input_output": [VAT_input_output],
-                    "current_assets": [current_assets],
-                    "total_sales": [total_sales],
-                    "less_crdt_bal_prv_mnth": [less_crdt_bal_prv_mnth],
-                    "input_VAT": [input_VAT],
-                    "total_liabilities": [total_liabilities],
-                    "total_expenses": [total_expenses],
-                    "total_purchases": [total_purchases],
-                    "current_liabilities": [current_liabilities],
-                    "profit_margin": [profit_margin],
-                    "proprtor_capt_reserves": [proprtor_capt_reserves],
-                    "paye_payable": [paye_payable],
-                    "gross_turnover": [gross_turnover],
-                    "Age": [Age],
                     "net_profit": [net_profit],
-
+                    "current_assets": [current_assets],
+                    "total_inventory": [total_inventory],
+                    "proprtor_capt_reserves": [proprtor_capt_reserves],
+                    "total_debt": [total_debt],
+                    "capital_allowance": [capital_allowance],
+                    "installment_tax_paid": [installment_tax_paid],
+                    "tax_payable_IT": [tax_payable_IT],
+                    "sales_exempt": [sales_exempt],
+                    "output_VAT": [output_VAT],
+                    "input_VAT": [input_VAT],
+                    "VAT_payable": [VAT_payable],
+                    "less_crdt_bal_prv_mnth": [less_crdt_bal_prv_mnth],
+                    "WVAT - credit": [WVAT_credit],
+                    "VAT_advance_paid": [VAT_advance_paid],
+                    "paye_payable": [paye_payable],
+                    "current_ratio": [current_ratio],
+                    "quick_ratio": [quick_ratio],
+                    "Gearing_ratio": [Gearing_ratio],
+                    "total_liabilities": [total_liabilities],
                 })
             # st.dataframe(data)
 
