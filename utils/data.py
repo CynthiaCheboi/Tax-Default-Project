@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 
 from pygwalker.api.streamlit import StreamlitRenderer
 
-@st.cache_data
+#@st.cache_data
 def  read_data():
     return pd.read_csv('https://raw.githubusercontent.com/CynthiaCheboi/POA_/main/taxdefaultcleaned2.csv')
 
@@ -52,16 +52,16 @@ def predict_model(data):
 def model_category_using_prediction(predictions_dict,thershold):
 
     if predictions_dict['probability'] > float(thershold):
-        return 'Late payment'
-    else:
         return 'On-time payment'
+    else:
+        return 'Late payment'
 
 def model_category_using_y_preds(y_preds):
 
     if y_preds == 0:
-        return 'On-time payment'
-    else:
         return 'Late payment'
+    else:
+        return 'On-time payment'
 
 
 
